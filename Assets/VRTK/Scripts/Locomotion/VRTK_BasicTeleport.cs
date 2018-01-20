@@ -162,15 +162,14 @@ namespace VRTK
         {
             DestinationMarkerEventArgs teleportArgs = BuildTeleportArgs(null, destinationPosition, destinationRotation);
             StartTeleport(this, teleportArgs);
-            Quaternion updatedRotation = SetNewRotation(destinationRotation);
-            Vector3 finalDestination = GetCompensatedPosition(destinationPosition, destinationPosition);
-            CalculateBlinkDelay(blinkTransitionSpeed, finalDestination);
+            CalculateBlinkDelay(blinkTransitionSpeed, destinationPosition);
             Blink(blinkTransitionSpeed);
             if (ValidRigObjects())
             {
-                playArea.position = finalDestination;
+                playArea.position = destinationPosition;
             }
-            ProcessOrientation(this, teleportArgs, finalDestination, updatedRotation);
+            Quaternion updatedRotation = SetNewRotation(destinationRotation);
+            ProcessOrientation(this, teleportArgs, destinationPosition, updatedRotation);
             EndTeleport(this, teleportArgs);
         }
 
@@ -249,11 +248,11 @@ namespace VRTK
             if (enableTeleport && ValidLocation(e.target, e.destinationPosition) && e.enableTeleport)
             {
                 StartTeleport(sender, e);
-                Quaternion updatedRotation = SetNewRotation(e.destinationRotation);
                 Vector3 newPosition = GetNewPosition(e.destinationPosition, e.target, e.forceDestinationPosition);
                 CalculateBlinkDelay(blinkTransitionSpeed, newPosition);
                 Blink(blinkTransitionSpeed);
                 Vector3 updatedPosition = SetNewPosition(newPosition, e.target, e.forceDestinationPosition);
+                Quaternion updatedRotation = SetNewRotation(e.destinationRotation);
                 ProcessOrientation(sender, e, updatedPosition, updatedRotation);
                 EndTeleport(sender, e);
             }
@@ -303,20 +302,15 @@ namespace VRTK
                 return tipPosition;
             }
 
-            return GetCompensatedPosition(tipPosition, playArea.position);
-        }
-
-        protected virtual Vector3 GetCompensatedPosition(Vector3 givenPosition, Vector3 defaultPosition)
-        {
             float newX = 0f;
             float newY = 0f;
             float newZ = 0f;
 
             if (ValidRigObjects())
             {
-                newX = (headsetPositionCompensation ? (givenPosition.x - (headset.position.x - playArea.position.x)) : givenPosition.x);
-                newY = defaultPosition.y;
-                newZ = (headsetPositionCompensation ? (givenPosition.z - (headset.position.z - playArea.position.z)) : givenPosition.z);
+                newX = (headsetPositionCompensation ? (tipPosition.x - (headset.position.x - playArea.position.x)) : tipPosition.x);
+                newY = playArea.position.y;
+                newZ = (headsetPositionCompensation ? (tipPosition.z - (headset.position.z - playArea.position.z)) : tipPosition.z);
             }
 
             return new Vector3(newX, newY, newZ);

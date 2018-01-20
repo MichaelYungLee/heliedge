@@ -40,11 +40,6 @@ namespace VRTK
         [InitializeOnLoadMethod]
         private static void EnsureVersionSymbolIsSet()
         {
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                return;
-            }
-
             IEnumerable<string> atLeastVersionSymbols = new[] { CurrentVersion }
                 .Concat(PreviousVersions)
                 .Select(AtLeastVersionSymbol);
@@ -63,10 +58,7 @@ namespace VRTK
                                                     .Concat(versionSymbols)
                                                     .ToArray();
 
-                if (!currentSymbols.SequenceEqual(newSymbols))
-                {
-                    PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", newSymbols));
-                }
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, string.Join(";", newSymbols));
             }
         }
 #endif

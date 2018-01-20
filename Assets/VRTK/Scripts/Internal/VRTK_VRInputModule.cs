@@ -62,7 +62,7 @@
                 return false;
             }
 
-            if (target == source)
+            if (target.Equals(source))
             {
                 return true;
             }

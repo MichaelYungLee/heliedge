@@ -33,13 +33,10 @@ namespace VRTK
         public bool hideHandsAtSwitch = false;
         [Tooltip("Reset hand position and rotation when enabling them.")]
         public bool resetHandsAtSwitch = true;
-		
-        [Header("Mouse cursor lock")]
-
-        [Tooltip("Lock the mouse cursor to the game window.")]
-        public bool lockMouseToView = true;
-        [Tooltip("Whether the mouse movement always acts as input or requires a button press.")]
+        [Tooltip("Whether mouse movement always acts as input or requires a button press.")]
         public MouseInputMode mouseMovementInput = MouseInputMode.Always;
+        [Tooltip("Lock the mouse cursor to the game window when the mouse movement key is pressed.")]
+        public bool lockMouseToView = true;
 
         [Header("Adjustments")]
 
@@ -214,10 +211,6 @@ namespace VRTK
                 {
                     oldPos = Input.mousePosition;
                 }
-            }
-            else
-            {
-                Cursor.lockState = lockMouseToView ? CursorLockMode.Locked : CursorLockMode.None;
             }
 
             if (Input.GetKeyDown(handsOnOff))

@@ -107,7 +107,7 @@ namespace VRTK.SecondaryControllerGrabActions
 
         protected virtual IEnumerator RealignOnRelease()
         {
-            float elapsedTime = 0f;
+            var elapsedTime = 0f;
 
             while (elapsedTime < releaseSnapSpeed)
             {

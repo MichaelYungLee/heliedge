@@ -38,7 +38,7 @@ namespace VRTK
         protected List<GameObject> interactingObjects; // Objects (controllers) that are either colliding with the menu or clicking the menu
         protected List<GameObject> collidingObjects; // Just objects that are currently colliding with the menu or its parent
         protected SphereCollider menuCollider;
-        protected Coroutine delayedSetColliderEnabledRoutine;
+        protected Coroutine disableCoroutine;
         protected Vector3 desiredColliderCenter;
         protected Quaternion initialRotation;
         protected bool isClicked = false;
@@ -87,9 +87,10 @@ namespace VRTK
             // Reset variables
             interactingObjects = new List<GameObject>();
             collidingObjects = new List<GameObject>();
-            if (delayedSetColliderEnabledRoutine != null)
+            if (disableCoroutine != null)
             {
-                StopCoroutine(delayedSetColliderEnabledRoutine);
+                StopCoroutine(disableCoroutine);
+                disableCoroutine = null;
             }
             isClicked = false;
             waitingToDisableCollider = false;
@@ -183,7 +184,7 @@ namespace VRTK
         {
             if (rotateTowards == null) // Backup
             {
-                Transform headset = VRTK_DeviceFinder.HeadsetTransform();
+                var headset = VRTK_DeviceFinder.HeadsetTransform();
                 if (headset)
                 {
                     rotateTowards = headset.gameObject;
@@ -265,9 +266,9 @@ namespace VRTK
             if (addMenuCollider && menuCollider != null)
             {
                 SetColliderState(true, e);
-                if (delayedSetColliderEnabledRoutine != null)
+                if (disableCoroutine != null)
                 {
-                    StopCoroutine(delayedSetColliderEnabledRoutine);
+                    StopCoroutine(disableCoroutine);
                 }
             }
         }
@@ -283,7 +284,7 @@ namespace VRTK
                 if (addMenuCollider && menuCollider != null)
                 {
                     // In case there's any gap between the normal collider and the menuCollider, delay a bit. Cancelled if collider is re-entered
-                    delayedSetColliderEnabledRoutine = StartCoroutine(DelayedSetColliderEnabled(false, 0.25f, e));
+                    disableCoroutine = StartCoroutine(DelayedSetColliderEnabled(false, 0.25f, e));
                 }
             }
         }
@@ -309,15 +310,17 @@ namespace VRTK
 
         protected virtual float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)
         {
-            return Mathf.Atan2(Vector3.Dot(n, Vector3.Cross(v1, v2)), Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
+            return Mathf.Atan2(
+                Vector3.Dot(n, Vector3.Cross(v1, v2)),
+                Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
         }
 
         protected virtual void ImmediatelyHideMenu(InteractableObjectEventArgs e)
         {
             ObjectUntouched(this, e);
-            if (delayedSetColliderEnabledRoutine != null)
+            if (disableCoroutine != null)
             {
-                StopCoroutine(delayedSetColliderEnabledRoutine);
+                StopCoroutine(disableCoroutine);
             }
             SetColliderState(false, e); // Don't want to wait for this
         }
@@ -336,14 +339,12 @@ namespace VRTK
                     bool should = true;
                     Collider[] colliders = eventsManager.GetComponents<Collider>();
                     Collider[] controllerColliders = e.interactingObject.GetComponent<VRTK_InteractTouch>().ControllerColliders();
-                    for (int i = 0; i < colliders.Length; i++)
+                    foreach (var collider in colliders)
                     {
-                        Collider collider = colliders[i];
                         if (collider != menuCollider)
                         {
-                            for (int j = 0; j < controllerColliders.Length; j++)
+                            foreach (var controllerCollider in controllerColliders)
                             {
-                                Collider controllerCollider = controllerColliders[j];
                                 if (controllerCollider.bounds.Intersects(collider.bounds))
                                 {
                                     should = false;
@@ -370,6 +371,8 @@ namespace VRTK
             yield return new WaitForSeconds(delay);
 
             SetColliderState(enabled, e);
+
+            StopCoroutine("delayedSetColliderEnabled");
         }
     }
 }

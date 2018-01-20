@@ -333,8 +333,7 @@ namespace VRTK
 
                 if (controller != null)
                 {
-                    Transform foundModel = controller.transform.Find("Model");
-                    model = (foundModel != null ? foundModel.gameObject : null);
+                    model = controller.transform.Find("Model").gameObject;
                 }
             }
             return model;

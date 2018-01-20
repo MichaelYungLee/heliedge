@@ -41,7 +41,6 @@ namespace VRTK
         public event ObjectAutoGrabEventHandler ObjectAutoGrabCompleted;
 
         protected VRTK_InteractableObject previousClonedObject = null;
-        protected Coroutine autoGrabRoutine;
 
         public virtual void OnObjectAutoGrabCompleted()
         {
@@ -67,15 +66,7 @@ namespace VRTK
                 cloneGrabbedObject = true;
             }
 
-            autoGrabRoutine = StartCoroutine(AutoGrab());
-        }
-
-        protected virtual void OnDisable()
-        {
-            if (autoGrabRoutine != null)
-            {
-                StopCoroutine(autoGrabRoutine);
-            }
+            StartCoroutine(AutoGrab());
         }
 
         protected virtual IEnumerator AutoGrab()

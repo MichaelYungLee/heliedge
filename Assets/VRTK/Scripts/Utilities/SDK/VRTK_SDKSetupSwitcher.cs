@@ -6,7 +6,6 @@ namespace VRTK
     using UnityEngine.UI;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// The SDK Setup Switcher adds a GUI overlay to allow switching the loaded VRTK_SDKSetup of the the current VRTK_SDKManager.
@@ -113,9 +112,7 @@ namespace VRTK
                     return;
             }
 
-            bool isAnyOtherCameraUsed = sdkManager.setups.Any(setup => setup != null && setup.gameObject.activeSelf)
-                                        || VRTK_DeviceFinder.HeadsetCamera() != null;
-            fallbackCamera.gameObject.SetActive(!isAnyOtherCameraUsed);
+            fallbackCamera.gameObject.SetActive(VRTK_DeviceFinder.HeadsetCamera() == null);
             eventSystem.gameObject.SetActive(EventSystem.current == null || EventSystem.current == eventSystem);
         }
 

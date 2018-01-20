@@ -48,7 +48,6 @@ namespace VRTK
 
         protected override void OnEnable()
         {
-            internalBodyPhysics = bodyPhysics;
             base.OnEnable();
             headset = VRTK_DeviceFinder.HeadsetTransform();
         }

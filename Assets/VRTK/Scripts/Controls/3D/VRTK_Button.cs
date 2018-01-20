@@ -113,16 +113,15 @@ namespace VRTK
             Gizmos.DrawLine(bounds.center, bounds.center + activationDir);
         }
 
-        protected virtual void SetupCollider()
+        protected override void InitRequiredComponents()
         {
-            if (GetComponent<Collider>() == null)
+            restingPosition = transform.position;
+
+            if (!GetComponent<Collider>())
             {
                 gameObject.AddComponent<BoxCollider>();
             }
-        }
 
-        protected virtual void SetupRigidbody()
-        {
             buttonRigidbody = GetComponent<Rigidbody>();
             if (buttonRigidbody == null)
             {
@@ -130,20 +129,14 @@ namespace VRTK
             }
             buttonRigidbody.isKinematic = false;
             buttonRigidbody.useGravity = false;
-        }
 
-        protected virtual void SetupConstantForce()
-        {
             buttonForce = GetComponent<ConstantForce>();
             if (buttonForce == null)
             {
                 buttonForce = gameObject.AddComponent<ConstantForce>();
             }
-        }
 
-        protected virtual void SetupConnectedTo()
-        {
-            if (connectedTo != null)
+            if (connectedTo)
             {
                 Rigidbody connectedToRigidbody = connectedTo.GetComponent<Rigidbody>();
                 if (connectedToRigidbody == null)
@@ -151,115 +144,6 @@ namespace VRTK
                     connectedToRigidbody = connectedTo.AddComponent<Rigidbody>();
                 }
                 connectedToRigidbody.useGravity = false;
-            }
-        }
-
-        protected override void InitRequiredComponents()
-        {
-            restingPosition = transform.position;
-
-            SetupCollider();
-            SetupRigidbody();
-            SetupConstantForce();
-            SetupConnectedTo();
-        }
-
-        protected virtual void DetectJointSetup()
-        {
-            buttonJoint = GetComponent<ConfigurableJoint>();
-            bool recreate = false;
-            Rigidbody oldBody = null;
-            Vector3 oldAnchor = Vector3.zero;
-            Vector3 oldAxis = Vector3.zero;
-
-            if (buttonJoint != null)
-            {
-                // save old values, needs to be recreated
-                oldBody = buttonJoint.connectedBody;
-                oldAnchor = buttonJoint.anchor;
-                oldAxis = buttonJoint.axis;
-                DestroyImmediate(buttonJoint);
-                recreate = true;
-            }
-
-            // since limit applies to both directions object needs to be moved halfway to activation before adding joint
-            transform.position = transform.position + ((activationDir.normalized * activationDistance) * 0.5f);
-            buttonJoint = gameObject.AddComponent<ConfigurableJoint>();
-
-            if (recreate)
-            {
-                buttonJoint.connectedBody = oldBody;
-                buttonJoint.anchor = oldAnchor;
-                buttonJoint.axis = oldAxis;
-            }
-
-            buttonJoint.connectedBody = (connectedTo != null ? connectedTo.GetComponent<Rigidbody>() : buttonJoint.connectedBody);
-            buttonJoint.autoConfigureConnectedAnchor = false;
-        }
-
-        protected virtual void DetectJointLimitsSetup()
-        {
-            SoftJointLimit buttonJointLimits = new SoftJointLimit();
-            buttonJointLimits.limit = activationDistance * 0.501f; // set limit to half (since it applies to both directions) and a tiny bit larger since otherwise activation distance might be missed
-            buttonJoint.linearLimit = buttonJointLimits;
-
-            buttonJoint.angularXMotion = ConfigurableJointMotion.Locked;
-            buttonJoint.angularYMotion = ConfigurableJointMotion.Locked;
-            buttonJoint.angularZMotion = ConfigurableJointMotion.Locked;
-            buttonJoint.xMotion = ConfigurableJointMotion.Locked;
-            buttonJoint.yMotion = ConfigurableJointMotion.Locked;
-            buttonJoint.zMotion = ConfigurableJointMotion.Locked;
-        }
-
-        protected virtual void DetectJointDirectionSetup()
-        {
-            switch (finalDirection)
-            {
-                case ButtonDirection.x:
-                case ButtonDirection.negX:
-                    if (Mathf.RoundToInt(Mathf.Abs(transform.right.x)) == 1)
-                    {
-                        buttonJoint.xMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.up.x)) == 1)
-                    {
-                        buttonJoint.yMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.x)) == 1)
-                    {
-                        buttonJoint.zMotion = ConfigurableJointMotion.Limited;
-                    }
-                    break;
-                case ButtonDirection.y:
-                case ButtonDirection.negY:
-                    if (Mathf.RoundToInt(Mathf.Abs(transform.right.y)) == 1)
-                    {
-                        buttonJoint.xMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.up.y)) == 1)
-                    {
-                        buttonJoint.yMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.y)) == 1)
-                    {
-                        buttonJoint.zMotion = ConfigurableJointMotion.Limited;
-                    }
-                    break;
-                case ButtonDirection.z:
-                case ButtonDirection.negZ:
-                    if (Mathf.RoundToInt(Mathf.Abs(transform.right.z)) == 1)
-                    {
-                        buttonJoint.xMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.up.z)) == 1)
-                    {
-                        buttonJoint.yMotion = ConfigurableJointMotion.Limited;
-                    }
-                    else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.z)) == 1)
-                    {
-                        buttonJoint.zMotion = ConfigurableJointMotion.Limited;
-                    }
-                    break;
             }
         }
 
@@ -271,19 +155,109 @@ namespace VRTK
                 activationDir = Vector3.zero;
                 return false;
             }
+            if (direction != ButtonDirection.autodetect)
+            {
+                activationDir = CalculateActivationDir();
+            }
 
-            activationDir = (direction != ButtonDirection.autodetect ? CalculateActivationDir() : activationDir);
-
-            if (buttonForce != null)
+            if (buttonForce)
             {
                 buttonForce.force = GetForceVector();
             }
 
             if (Application.isPlaying)
             {
-                DetectJointSetup();
-                DetectJointLimitsSetup();
-                DetectJointDirectionSetup();
+                buttonJoint = GetComponent<ConfigurableJoint>();
+
+                bool recreate = false;
+                Rigidbody oldBody = null;
+                Vector3 oldAnchor = Vector3.zero;
+                Vector3 oldAxis = Vector3.zero;
+
+                if (buttonJoint)
+                {
+                    // save old values, needs to be recreated
+                    oldBody = buttonJoint.connectedBody;
+                    oldAnchor = buttonJoint.anchor;
+                    oldAxis = buttonJoint.axis;
+                    DestroyImmediate(buttonJoint);
+                    recreate = true;
+                }
+
+                // since limit applies to both directions object needs to be moved halfway to activation before adding joint
+                transform.position = transform.position + ((activationDir.normalized * activationDistance) * 0.5f);
+                buttonJoint = gameObject.AddComponent<ConfigurableJoint>();
+
+                if (recreate)
+                {
+                    buttonJoint.connectedBody = oldBody;
+                    buttonJoint.anchor = oldAnchor;
+                    buttonJoint.axis = oldAxis;
+                }
+                if (connectedTo)
+                {
+                    buttonJoint.connectedBody = connectedTo.GetComponent<Rigidbody>();
+                }
+
+                SoftJointLimit buttonJointLimits = new SoftJointLimit();
+                buttonJointLimits.limit = activationDistance * 0.501f; // set limit to half (since it applies to both directions) and a tiny bit larger since otherwise activation distance might be missed
+                buttonJoint.linearLimit = buttonJointLimits;
+
+                buttonJoint.angularXMotion = ConfigurableJointMotion.Locked;
+                buttonJoint.angularYMotion = ConfigurableJointMotion.Locked;
+                buttonJoint.angularZMotion = ConfigurableJointMotion.Locked;
+                buttonJoint.xMotion = ConfigurableJointMotion.Locked;
+                buttonJoint.yMotion = ConfigurableJointMotion.Locked;
+                buttonJoint.zMotion = ConfigurableJointMotion.Locked;
+
+                switch (finalDirection)
+                {
+                    case ButtonDirection.x:
+                    case ButtonDirection.negX:
+                        if (Mathf.RoundToInt(Mathf.Abs(transform.right.x)) == 1)
+                        {
+                            buttonJoint.xMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.up.x)) == 1)
+                        {
+                            buttonJoint.yMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.x)) == 1)
+                        {
+                            buttonJoint.zMotion = ConfigurableJointMotion.Limited;
+                        }
+                        break;
+                    case ButtonDirection.y:
+                    case ButtonDirection.negY:
+                        if (Mathf.RoundToInt(Mathf.Abs(transform.right.y)) == 1)
+                        {
+                            buttonJoint.xMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.up.y)) == 1)
+                        {
+                            buttonJoint.yMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.y)) == 1)
+                        {
+                            buttonJoint.zMotion = ConfigurableJointMotion.Limited;
+                        }
+                        break;
+                    case ButtonDirection.z:
+                    case ButtonDirection.negZ:
+                        if (Mathf.RoundToInt(Mathf.Abs(transform.right.z)) == 1)
+                        {
+                            buttonJoint.xMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.up.z)) == 1)
+                        {
+                            buttonJoint.yMotion = ConfigurableJointMotion.Limited;
+                        }
+                        else if (Mathf.RoundToInt(Mathf.Abs(transform.forward.z)) == 1)
+                        {
+                            buttonJoint.zMotion = ConfigurableJointMotion.Limited;
+                        }
+                        break;
+                }
             }
 
             return true;
@@ -320,7 +294,7 @@ namespace VRTK
             }
             else
             {
-                if (oldState == 1)
+                if(oldState == 1)
                 {
                     value = 0;
                     OnReleased(SetControlEvent());
@@ -331,7 +305,7 @@ namespace VRTK
         protected virtual void FixedUpdate()
         {
             // update reference position if no force is acting on the button to support scenarios where the button is moved at runtime with a connected body
-            if (forceCount == 0 && buttonJoint.connectedBody != null)
+            if (forceCount == 0 && buttonJoint.connectedBody)
             {
                 restingPosition = transform.position;
             }

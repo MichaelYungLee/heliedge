@@ -30,7 +30,7 @@ Material:
     - _Shininess: 0.18228342
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _SpecColor: {r: 0.41044778, g: 0.41044778, b: 0.41044778, a: 1}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1002 &2100001
 EditorExtensionImpl:
   serializedVersion: 6

@@ -5,13 +5,13 @@ AnimatorController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: prop_robotArm (1)
+  m_Name: Back_Rotor (1)
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
-    m_StateMachine: {fileID: 1107467863797187730}
+    m_StateMachine: {fileID: 1107057749030159820}
     m_Mask: {fileID: 0}
     m_Motions: []
     m_Behaviours: []
@@ -21,13 +21,13 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1102 &1102020857815349320
+--- !u!1102 &1102446073019343690
 AnimatorState:
   serializedVersion: 5
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: clawInitialState
+  m_Name: tailOnCrane
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -44,13 +44,13 @@ AnimatorState:
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
---- !u!1102 &1102595551077903696
+--- !u!1102 &1102710581070765186
 AnimatorState:
   serializedVersion: 5
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: clawTailRotorInsert
+  m_Name: tailRotorActualMove
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -62,12 +62,12 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 36d434745c0a04041a09cbbc992d3d7a, type: 2}
+  m_Motion: {fileID: 7400000, guid: eb5d4f8eb28c841a09d8e9e5db6202ef, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
---- !u!1107 &1107467863797187730
+--- !u!1107 &1107057749030159820
 AnimatorStateMachine:
   serializedVersion: 5
   m_ObjectHideFlags: 1
@@ -76,11 +76,11 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: 1102595551077903696}
-    m_Position: {x: 300, y: 180, z: 0}
+    m_State: {fileID: 1102710581070765186}
+    m_Position: {x: 324, y: 60, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: 1102020857815349320}
-    m_Position: {x: 300, y: 120, z: 0}
+    m_State: {fileID: 1102446073019343690}
+    m_Position: {x: 324, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -90,4 +90,4 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 1102020857815349320}
+  m_DefaultState: {fileID: 1102446073019343690}

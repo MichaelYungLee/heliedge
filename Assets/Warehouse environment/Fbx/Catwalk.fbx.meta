@@ -3,7 +3,19 @@ guid: b85eb45a979a5f84ab5c95e77d937b40
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Camera
+    100002: //RootNode
+    100004: catwalk_01_1
+    100006: Light
+    400000: Camera
+    400002: //RootNode
+    400004: catwalk_01_1
+    400006: Light
+    2300000: catwalk_01_1
+    3300000: catwalk_01_1
     4300000: catwalk_01_1
+    6400000: catwalk_01_1
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 2

@@ -15,10 +15,30 @@ labels:
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Back_Rotor
+    100002: //RootNode
+    100004: Gunship
+    100006: Hellfire_Missile
+    100008: Rotor
+    400000: Back_Rotor
+    400002: //RootNode
+    400004: Gunship
+    400006: Hellfire_Missile
+    400008: Rotor
+    2300000: Back_Rotor
+    2300002: Gunship
+    2300004: Hellfire_Missile
+    2300006: Rotor
+    3300000: Back_Rotor
+    3300002: Gunship
+    3300004: Hellfire_Missile
+    3300006: Rotor
     4300000: Gunship
     4300002: Rotor
     4300004: Back_Rotor
     4300006: Hellfire_Missile
+    7400000: Fly
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

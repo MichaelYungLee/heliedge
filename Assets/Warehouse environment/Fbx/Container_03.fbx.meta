@@ -3,7 +3,19 @@ guid: f4d04603059c2a848b29b7a50dd59070
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Camera
+    100002: //RootNode
+    100004: Container_03_1
+    100006: Light
+    400000: Camera
+    400002: //RootNode
+    400004: Container_03_1
+    400006: Light
+    2300000: Container_03_1
+    3300000: Container_03_1
     4300000: Container_03_1
+    6400000: Container_03_1
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

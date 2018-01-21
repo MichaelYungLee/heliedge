@@ -3,7 +3,18 @@ guid: 09586691bedef254bbea61d58d1875d7
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Barrier_small
+    100002: //RootNode
+    100004: Camera
+    100006: Light
+    400000: Barrier_small
+    400002: //RootNode
+    400004: Camera
+    400006: Light
+    2300000: Barrier_small
+    3300000: Barrier_small
     4300000: Barrier_small
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

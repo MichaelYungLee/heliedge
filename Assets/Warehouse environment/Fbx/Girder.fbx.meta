@@ -3,7 +3,18 @@ guid: ff18d0ce042312642a9cbc32f45c5b57
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
+    100000: Camera
+    100002: //RootNode
+    100004: Girder_01_1
+    100006: Light
+    400000: Camera
+    400002: //RootNode
+    400004: Girder_01_1
+    400006: Light
+    2300000: Girder_01_1
+    3300000: Girder_01_1
     4300000: Girder_01_1
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0

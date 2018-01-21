@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<grammar xml:lang="en-US" root="rootRule" 
+tag-format="semantics/1.0" version="1.0" 
+xmlns="http://www.w3.org/2001/06/grammar">
+
+	<rule id="rootRule">
+		<one-of>
+			<item> 
+				This a phrase
+			</item>
+			<item> 
+				This a another phrase
+			</item>
+		</one-of>
+	</rule>
+</grammar>

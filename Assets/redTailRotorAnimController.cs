@@ -5,7 +5,7 @@ using UnityEngine;
 public class redTailRotorAnimController : MonoBehaviour {
 
 	public Animator redTailRotorAnim;
-	bool redTailRotorInstalled;
+	public bool redTailRotorInstalled;
 
 
 	// Use this for initialization
@@ -21,6 +21,10 @@ public class redTailRotorAnimController : MonoBehaviour {
 			//redTailRotorAnim.Stop ("tailRotorActualMove");
 			redTailRotorInstalled = true;
 		}
+	}
+
+	public bool getInstalled() {
+		return redTailRotorInstalled;
 	}
 
 }
